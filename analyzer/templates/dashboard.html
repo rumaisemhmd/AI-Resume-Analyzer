@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+<h2 class="mb-4">
+Analysis Dashboard
+</h2>
+
+<table class="table table-bordered table-hover">
+
+<thead class="table-dark">
+
+<tr>
+
+<th>Resume</th>
+
+<th>Job</th>
+
+<th>Score</th>
+
+<th>Date</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+{% for analysis in analyses %}
+<tr>
+    <td>{{ analysis.resume.resume_file.name }}</td>
+    <td>{{ analysis.job.title }}</td>
+    <td>
+        <span class="badge bg-success">
+            {{ analysis.similarity_score|floatformat:2 }}%
+        </span>
+    </td>
+    <td>{{ analysis.created_at|date:"d M Y H:i" }}</td>
+    <td>
+        <a href="{% url 'analysis_result' analysis.id %}"
+           class="btn btn-primary btn-sm">
+            View
+        </a>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="5" class="text-center">
+        No analyses found.
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
+
+</div>
+
+{% endblock %}

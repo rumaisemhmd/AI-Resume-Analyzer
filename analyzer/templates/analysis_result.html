@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow-lg border-0">
+
+        <div class="card-body p-5">
+
+            <h1 class="text-center mb-4">
+                🤖 AI Resume Analyzer
+            </h1>
+
+            <h3 class="text-center text-primary mb-4">
+                📊 Resume Match Analysis
+            </h3>
+
+            <!-- Progress Bar -->
+
+            <div class="progress mb-4" style="height:30px; border-radius:15px;">
+
+                <div class="progress-bar progress-bar-striped progress-bar-animated
+
+                {% if analysis.similarity_score >= 75 %}
+                    bg-success
+                {% elif analysis.similarity_score >= 50 %}
+                    bg-warning
+                {% else %}
+                    bg-danger
+                {% endif %}"
+
+                role="progressbar"
+                style="width: {{ analysis.similarity_score }}%;">
+
+                    {{ analysis.similarity_score|floatformat:2 }}%
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <!-- Matched Skills -->
+
+            <h4 class="mt-4">
+                <i class="bi bi-check-circle-fill text-success"></i>
+                Matched Skills
+            </h4>
+
+            {% for skill in matched %}
+
+                <span class="badge bg-success rounded-pill fs-6 me-2 mb-2 p-2">
+                    {{ skill }}
+                </span>
+
+            {% empty %}
+
+                <p>No matched skills found.</p>
+
+            {% endfor %}
+
+            <hr>
+
+            <!-- Missing Skills -->
+
+            <h4 class="mt-4">
+                <i class="bi bi-x-circle-fill text-danger"></i>
+                Missing Skills
+            </h4>
+
+            {% for skill in missing %}
+
+                <span class="badge bg-danger rounded-pill fs-6 me-2 mb-2 p-2">
+                    {{ skill }}
+                </span>
+
+            {% empty %}
+
+                <p>No missing skills.</p>
+
+            {% endfor %}
+
+            <hr>
+
+            <!-- Recommendation -->
+
+            <h4 class="mt-4">
+                <i class="bi bi-lightbulb-fill text-warning"></i>
+                ATS Recommendation
+            </h4>
+
+            <div class="alert alert-info mt-3">
+
+                {{ recommendation }}
+
+            </div>
+
+            <div class="text-center mt-4">
+
+                <a href="{% url 'analyze_resume' %}" class="btn btn-primary me-2">
+                    <i class="bi bi-arrow-repeat"></i>
+                    Analyze Another Resume
+                </a>
+
+                <a href="{% url 'dashboard' %}" class="btn btn-dark me-2">
+                    <i class="bi bi-speedometer2"></i>
+                    Dashboard
+                </a>
+
+                <a href="{% url 'download_report' analysis.id %}" class="btn btn-success">
+                    <i class="bi bi-download"></i>
+                    Download PDF Report
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

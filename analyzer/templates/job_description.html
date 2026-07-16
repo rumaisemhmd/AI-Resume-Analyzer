@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+<div class="card shadow p-4">
+
+<h2>Job Description</h2>
+
+<form method="POST">
+
+{% csrf_token %}
+
+{{ form.as_p }}
+
+<button class="btn btn-success">
+
+Save Job Description
+
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+{% endblock %}

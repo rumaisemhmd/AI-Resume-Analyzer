@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="text-center py-5">
+
+    <h1 class="display-3 fw-bold">
+        🤖 AI Resume Analyzer
+    </h1>
+
+    <p class="lead mt-3">
+        Analyze resumes using Artificial Intelligence, compare them with job descriptions,
+        detect missing skills, and generate ATS-ready recommendations.
+    </p>
+
+    <div class="mt-4">
+
+        <a href="{% url 'upload_resume' %}" class="btn btn-primary btn-lg me-2">
+            Upload Resume
+        </a>
+
+        <a href="{% url 'job_description' %}" class="btn btn-success btn-lg me-2">
+            Add Job Description
+        </a>
+
+        <a href="{% url 'analyze_resume' %}" class="btn btn-warning btn-lg">
+            Analyze Resume
+        </a>
+
+    </div>
+
+</div>
+
+<hr class="my-5">
+
+<div class="row g-4">
+
+    <div class="col-md-4">
+
+        <div class="card shadow h-100">
+
+            <div class="card-body text-center">
+
+                <h2>📄</h2>
+
+                <h4>Resume Parsing</h4>
+
+                <p>
+                    Extract text automatically from PDF and DOCX resumes.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card shadow h-100">
+
+            <div class="card-body text-center">
+
+                <h2>🧠</h2>
+
+                <h4>AI Matching</h4>
+
+                <p>
+                    Compare resumes with job descriptions using AI and TF-IDF similarity.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card shadow h-100">
+
+            <div class="card-body text-center">
+
+                <h2>📊</h2>
+
+                <h4>ATS Score</h4>
+
+                <p>
+                    Get match percentage, missing skills, recommendations, and downloadable PDF reports.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<hr class="my-5">
+
+<div class="text-center">
+
+    <h2 class="fw-bold">
+        Why Use AI Resume Analyzer?
+    </h2>
+
+    <p class="lead mt-3">
+
+        ✔️ Detect missing skills
+
+        <br><br>
+
+        ✔️ Improve ATS compatibility
+
+        <br><br>
+
+        ✔️ Compare multiple resumes
+
+        <br><br>
+
+        ✔️ Download professional reports
+
+        <br><br>
+
+        ✔️ Built using Python, Django, PostgreSQL and AI
+
+    </p>
+
+</div>
+
+{% endblock %}
