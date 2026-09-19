@@ -20,3 +20,8 @@ class AnalysisForm(forms.ModelForm):
     class Meta:
         model = Analysis
         fields = ["resume", "job"]
+
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if user is not None:
+            self.fields["resume"].queryset = Resume.objects.filter(user=user)

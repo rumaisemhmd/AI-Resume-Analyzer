@@ -1,6 +1,13 @@
+from django.conf import settings
 from django.db import models
 
 class Resume(models.Model):
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="resumes",
+    )
 
     resume_file = models.FileField(upload_to="resumes/")
 
@@ -20,6 +27,12 @@ class JobDescription(models.Model):
         return self.title
     
 class Analysis(models.Model):
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="analyses",
+    )
 
     resume = models.ForeignKey(
         Resume,
