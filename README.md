@@ -1,45 +1,34 @@
 # AI Resume Analyzer
 
-An AI-powered resume analyzer built with Python and Django that compares resumes against job descriptions, calculates an ATS-style match score, identifies missing skills, and generates a downloadable PDF report — deployed live, handling real input.
+An AI-powered resume analyzer built with Django that scores a resume against a job description using TF-IDF and cosine similarity, lists exactly which required skills matched and which are missing, and generates a downloadable PDF report — scoped to tech/IT roles, with Google-only sign-in and per-user data isolation.
 
-Live Demo: https://ai-resume-analyzer-elqe.onrender.com
+**Live Demo:** https://ai-resume-analyzer-elqe.onrender.com
 
----
-
-## Problem
-
-Most resume-screening tools only measure keyword overlap, with no clear feedback loop for the candidate — you don't know *why* you scored the way you did, or what's actually missing versus what just wasn't phrased the way the system expected.
-
-## Solution
-
-This project parses a resume and a job description, scores their relevance using TF-IDF similarity and cosine similarity, and surfaces the result as an interpretable score with matched and missing skills — not a black-box number — packaged into a downloadable PDF report.
+This is a portfolio project.
 
 ---
 
-## Features
+## What it does
 
-- Upload resumes in PDF and DOCX formats
-- Automatic resume text extraction
-- Add job description for comparison
-- TF-IDF-based similarity scoring between resume and job description
-- ATS-style compatibility score
-- Matched vs. missing skill detection
-- Personalized recommendations based on gaps found
-- Downloadable PDF analysis report
-- Responsive Bootstrap UI
-- PostgreSQL-backed persistence
-- Live deployment on Render
+Upload a resume (PDF or DOCX) and paste in a job description, and AI Resume Analyzer extracts the resume text, vectorizes both documents with TF-IDF, scores their similarity with cosine similarity, and separately runs rule-based keyword matching against a dictionary of tech/IT skills (languages, frameworks, cloud/DevOps, AI/ML, auth, testing, and general SDLC terms) to report matched vs. missing skills. Every result is saved to a private dashboard tied to your Google account and can be exported as a PDF report.
 
----
+## Tech Stack
 
-## Architecture / Workflow
+- **Backend:** Python, Django
+- **Database:** PostgreSQL
+- **AI/ML:** scikit-learn (TF-IDF vectorization, cosine similarity)
+- **PDF Generation:** ReportLab
+- **Auth:** Google OAuth2 via django-allauth (sign-in only, no local passwords)
+- **Frontend:** Django templates, Tailwind CSS (CDN, no build step), minimal vanilla JS
+- **Deployment:** Render
 
-```
-Upload resume (PDF/DOCX) → extract & clean text → add job description →
-TF-IDF vectorization (resume + job description) → cosine similarity scoring →
-rule-based skill matching → combined ATS score → PostgreSQL persistence →
-PDF report generation (ReportLab) → served via Django
-```
+## Key Features
+
+- Resume/job-description matching via TF-IDF + cosine similarity, producing an interpretable ATS-style score
+- Skill matching (matched vs. missing) against a dictionary scoped to tech/IT roles — programming languages, frameworks, cloud/DevOps, AI/ML, auth/security, and testing tools
+- Downloadable PDF report per analysis
+- Google-only authentication with per-user data isolation — every upload, analysis, and result is scoped to the signed-in account; nothing is visible to other users or to anonymous visitors
+- Responsive UI with an animated pipeline diagram showing the actual scoring flow
 
 ## How the Scoring Works
 
@@ -47,25 +36,15 @@ PDF report generation (ReportLab) → served via Django
 
 **Cosine similarity:** measures the angle between the resume's and job description's TF-IDF vectors — a score close to 1 means the two documents emphasize similar content, close to 0 means they don't, regardless of document length.
 
-**Skill matching:** runs separately from the similarity score, using rule-based keyword matching to explicitly list matched and missing skills — giving the user actionable detail beyond a single number.
+**Skill matching:** runs separately from the similarity score, using word-boundary-aware keyword matching against a fixed skill dictionary to explicitly list matched and missing skills — giving actionable detail beyond a single number.
 
 ## Known Limitations
 
-TF-IDF is purely frequency-based — it has no semantic understanding. Two resumes phrased differently but meaning the same thing (e.g., "led a team" vs. "managed people") can score as dissimilar even though a human reader would treat them the same. This is a known, understood limitation of the approach, not an oversight.
+TF-IDF is purely frequency-based — it has no semantic understanding. Two resumes phrased differently but meaning the same thing (e.g., "led a team" vs. "managed people") can score as dissimilar even though a human reader would treat them the same. Skill matching is exact-token based against a fixed dictionary scoped to tech/IT roles — it won't recognize skills outside that dictionary or industries outside tech. Both are known, understood limitations of the approach, not oversights.
 
 ---
 
-## Tech Stack
-
-- **Backend:** Python, Django
-- **Database:** PostgreSQL
-- **AI/ML:** Scikit-learn, TF-IDF vectorization, cosine similarity
-- **PDF Generation:** ReportLab
-- **Frontend:** HTML, CSS, Bootstrap 5
-- **Deployment:** Render
-- **Other:** Git, GitHub
-
-## Installation
+## Running Locally
 
 ```bash
 git clone https://github.com/rumaisemhmd/AI-Resume-Analyzer.git
@@ -75,16 +54,27 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-## Configuration
+### Environment variables
 
-Set up your PostgreSQL connection details and Django secret key in `.env` or `settings.py` before running migrations. *(Update with your project's actual required environment variables.)*
+Create a `.env` file in the project root (see `.env.example`):
 
-## How to Run
+```
+SECRET_KEY=your-django-secret-key
+DATABASE_URL=postgres://user:password@host:port/dbname
+GOOGLE_CLIENT_ID=your-google-oauth-client-id
+GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
+```
+
+`GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` come from a Google Cloud OAuth 2.0 Web application client, with `http://127.0.0.1:8000/accounts/google/login/callback/` added as an authorized redirect URI for local development.
+
+### Migrate and run
 
 ```bash
 python manage.py migrate
 python manage.py runserver
 ```
+
+The app will be available at `http://127.0.0.1:8000/`.
 
 ---
 
