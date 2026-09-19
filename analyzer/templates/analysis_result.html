@@ -1,124 +1,89 @@
 {% extends "base.html" %}
 
+{% block title %}Analysis Result &mdash; AI Resume Analyzer{% endblock %}
+
 {% block content %}
 
-<div class="container mt-5">
+<section class="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
 
-    <div class="card shadow-lg border-0">
+  <div class="flex flex-wrap items-start justify-between gap-4">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-bold text-slate-50">Analysis result</h1>
+      <p class="mt-1 text-sm text-slate-400">
+        {{ analysis.resume.resume_file.name }} &middot; {{ analysis.job.title }}
+      </p>
+    </div>
+    <span class="text-xs text-slate-500">{{ analysis.created_at|date:"d M Y, H:i" }}</span>
+  </div>
 
-        <div class="card-body p-5">
+  <div class="mt-8 rounded-xl border border-slate-800 bg-[#171a21] p-6">
+    <div class="flex items-center justify-between">
+      <span class="text-sm font-medium text-slate-300">ATS match score</span>
+      <span class="text-2xl font-bold
+        {% if analysis.similarity_score >= 75 %}text-emerald-400
+        {% elif analysis.similarity_score >= 50 %}text-amber-400
+        {% else %}text-rose-400{% endif %}">
+        {{ analysis.similarity_score|floatformat:2 }}%
+      </span>
+    </div>
+    <div class="mt-3 h-2.5 rounded-full bg-slate-800 overflow-hidden">
+      <div class="h-full rounded-full
+        {% if analysis.similarity_score >= 75 %}bg-emerald-500
+        {% elif analysis.similarity_score >= 50 %}bg-amber-500
+        {% else %}bg-rose-500{% endif %}"
+        style="width: {{ analysis.similarity_score }}%;"></div>
+    </div>
+  </div>
 
-            <h1 class="text-center mb-4">
-                🤖 AI Resume Analyzer
-            </h1>
+  <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
 
-            <h3 class="text-center text-primary mb-4">
-                📊 Resume Match Analysis
-            </h3>
-
-            <!-- Progress Bar -->
-
-            <div class="progress mb-4" style="height:30px; border-radius:15px;">
-
-                <div class="progress-bar progress-bar-striped progress-bar-animated
-
-                {% if analysis.similarity_score >= 75 %}
-                    bg-success
-                {% elif analysis.similarity_score >= 50 %}
-                    bg-warning
-                {% else %}
-                    bg-danger
-                {% endif %}"
-
-                role="progressbar"
-                style="width: {{ analysis.similarity_score }}%;">
-
-                    {{ analysis.similarity_score|floatformat:2 }}%
-
-                </div>
-
-            </div>
-
-            <hr>
-
-            <!-- Matched Skills -->
-
-            <h4 class="mt-4">
-                <i class="bi bi-check-circle-fill text-success"></i>
-                Matched Skills
-            </h4>
-
-            {% for skill in matched %}
-
-                <span class="badge bg-success rounded-pill fs-6 me-2 mb-2 p-2">
-                    {{ skill }}
-                </span>
-
-            {% empty %}
-
-                <p>No matched skills found.</p>
-
-            {% endfor %}
-
-            <hr>
-
-            <!-- Missing Skills -->
-
-            <h4 class="mt-4">
-                <i class="bi bi-x-circle-fill text-danger"></i>
-                Missing Skills
-            </h4>
-
-            {% for skill in missing %}
-
-                <span class="badge bg-danger rounded-pill fs-6 me-2 mb-2 p-2">
-                    {{ skill }}
-                </span>
-
-            {% empty %}
-
-                <p>No missing skills.</p>
-
-            {% endfor %}
-
-            <hr>
-
-            <!-- Recommendation -->
-
-            <h4 class="mt-4">
-                <i class="bi bi-lightbulb-fill text-warning"></i>
-                ATS Recommendation
-            </h4>
-
-            <div class="alert alert-info mt-3">
-
-                {{ recommendation }}
-
-            </div>
-
-            <div class="text-center mt-4">
-
-                <a href="{% url 'analyze_resume' %}" class="btn btn-primary me-2">
-                    <i class="bi bi-arrow-repeat"></i>
-                    Analyze Another Resume
-                </a>
-
-                <a href="{% url 'dashboard' %}" class="btn btn-dark me-2">
-                    <i class="bi bi-speedometer2"></i>
-                    Dashboard
-                </a>
-
-                <a href="{% url 'download_report' analysis.id %}" class="btn btn-success">
-                    <i class="bi bi-download"></i>
-                    Download PDF Report
-                </a>
-
-            </div>
-
-        </div>
-
+    <div class="rounded-xl border border-slate-800 bg-[#171a21] p-6">
+      <h2 class="flex items-center gap-2 font-semibold text-slate-100">
+        <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+        Matched skills
+      </h2>
+      <div class="mt-4 flex flex-wrap gap-2">
+        {% for skill in matched %}
+          <span class="inline-flex items-center rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm px-3 py-1">{{ skill|striptags }}</span>
+        {% empty %}
+          <p class="text-sm text-slate-500">No matched skills found.</p>
+        {% endfor %}
+      </div>
     </div>
 
-</div>
+    <div class="rounded-xl border border-slate-800 bg-[#171a21] p-6">
+      <h2 class="flex items-center gap-2 font-semibold text-slate-100">
+        <span class="h-2 w-2 rounded-full bg-rose-500"></span>
+        Missing skills
+      </h2>
+      <div class="mt-4 flex flex-wrap gap-2">
+        {% for skill in missing %}
+          <span class="inline-flex items-center rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-300 text-sm px-3 py-1">{{ skill|striptags }}</span>
+        {% empty %}
+          <p class="text-sm text-slate-500">No missing skills.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+
+  <div class="mt-6 rounded-xl border border-slate-800 bg-[#171a21] p-6">
+    <h2 class="font-semibold text-slate-100">Recommendation</h2>
+    <p class="mt-3 text-sm text-slate-300 leading-relaxed">{{ recommendation }}</p>
+  </div>
+
+  <div class="mt-8 flex flex-col sm:flex-row gap-3">
+    <a href="{% url 'download_report' analysis.id %}" class="inline-flex justify-center items-center gap-2 px-6 py-3 rounded-md bg-emerald-500 text-slate-950 font-semibold hover:bg-emerald-400 transition">
+      Download PDF report
+    </a>
+    <a href="{% url 'analyze_resume' %}" class="inline-flex justify-center items-center px-6 py-3 rounded-md border border-slate-700 text-slate-200 font-semibold hover:border-slate-500 transition">
+      Analyze another resume
+    </a>
+    <a href="{% url 'dashboard' %}" class="inline-flex justify-center items-center px-6 py-3 rounded-md text-slate-400 font-medium hover:text-slate-200 transition">
+      Back to dashboard
+    </a>
+  </div>
+
+</section>
 
 {% endblock %}

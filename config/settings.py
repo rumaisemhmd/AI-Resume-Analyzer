@@ -89,6 +89,7 @@ AUTHENTICATION_BACKENDS = [
 # Google Sign-In only -- no local username/password accounts.
 SOCIALACCOUNT_ONLY = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

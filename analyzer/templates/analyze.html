@@ -1,28 +1,92 @@
 {% extends "base.html" %}
 
+{% block title %}New Analysis &mdash; AI Resume Analyzer{% endblock %}
+
 {% block content %}
 
-<div class="container mt-5">
+<section class="max-w-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
 
-<div class="card shadow p-4">
+  <h1 class="text-2xl sm:text-3xl font-bold text-slate-50">New analysis</h1>
+  <p class="mt-2 text-slate-400">Upload a resume and paste the job description you want to score it against.</p>
 
-<h2>Analyze Resume</h2>
+  {% if form.non_field_errors %}
+    <div class="mt-6 rounded-md border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">
+      {{ form.non_field_errors }}
+    </div>
+  {% endif %}
 
-<form method="POST">
+  <form id="analyze-form" method="POST" enctype="multipart/form-data" class="mt-8 space-y-6">
+    {% csrf_token %}
 
-{% csrf_token %}
+    <div>
+      <label for="{{ form.resume_file.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
+        Resume (PDF or DOCX)
+      </label>
+      {{ form.resume_file }}
+      {% if form.resume_file.errors %}
+        <p class="mt-2 text-sm text-rose-400">{{ form.resume_file.errors|join:", " }}</p>
+      {% endif %}
+    </div>
 
-{{ form.as_p }}
+    <div>
+      <label for="{{ form.job_title.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
+        Job title
+      </label>
+      {{ form.job_title }}
+      {% if form.job_title.errors %}
+        <p class="mt-2 text-sm text-rose-400">{{ form.job_title.errors|join:", " }}</p>
+      {% endif %}
+    </div>
 
-<button class="btn btn-primary">
+    <div>
+      <label for="{{ form.job_description.id_for_label }}" class="block text-sm font-medium text-slate-300 mb-2">
+        Job description
+      </label>
+      {{ form.job_description }}
+      {% if form.job_description.errors %}
+        <p class="mt-2 text-sm text-rose-400">{{ form.job_description.errors|join:", " }}</p>
+      {% endif %}
+    </div>
 
-Analyze
+    <button id="analyze-submit" type="submit"
+            class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md bg-emerald-500 text-slate-950 font-semibold hover:bg-emerald-400 transition disabled:opacity-70 disabled:cursor-not-allowed">
+      <svg id="analyze-spinner" class="hidden animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+      </svg>
+      <span id="analyze-submit-label">Analyze resume</span>
+    </button>
+  </form>
 
-</button>
+</section>
 
-</form>
+{% endblock %}
 
-</div>
+{% block extra_js %}
+<script>
+  const analyzeInputs = ["{{ form.resume_file.id_for_label }}", "{{ form.job_title.id_for_label }}", "{{ form.job_description.id_for_label }}"];
+  analyzeInputs.forEach((id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.add(
+      "block", "w-full", "rounded-md", "border", "border-slate-700",
+      "bg-[#171a21]", "px-3", "py-2.5", "text-sm", "text-slate-100",
+      "placeholder-slate-500", "focus:outline-none", "focus:ring-2",
+      "focus:ring-emerald-500/60", "focus:border-emerald-500"
+    );
+  });
 
-</div>
+  const form = document.getElementById("analyze-form");
+  const submitBtn = document.getElementById("analyze-submit");
+  const spinner = document.getElementById("analyze-spinner");
+  const label = document.getElementById("analyze-submit-label");
+
+  if (form) {
+    form.addEventListener("submit", () => {
+      submitBtn.disabled = true;
+      spinner.classList.remove("hidden");
+      label.textContent = "Scoring resume against job description...";
+    });
+  }
+</script>
 {% endblock %}

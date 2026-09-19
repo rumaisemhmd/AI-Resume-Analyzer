@@ -2,141 +2,272 @@
 
 {% block content %}
 
-<div class="text-center py-5">
+<section class="max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-20 sm:pt-24 sm:pb-28">
+  <div class="max-w-3xl">
+    <span class="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
+      TF-IDF + cosine similarity scoring
+    </span>
 
-    <h1 class="display-3 fw-bold">
-        🤖 AI Resume Analyzer
+    <h1 class="mt-6 text-4xl sm:text-5xl font-bold tracking-tight text-slate-50 leading-tight">
+      Know exactly why your resume
+      <span class="text-emerald-400">did or didn't</span> match the job.
     </h1>
 
-    <p class="lead mt-3">
-        Analyze resumes using Artificial Intelligence, compare them with job descriptions,
-        detect missing skills, and generate ATS-ready recommendations.
+    <p class="mt-6 text-lg text-slate-400 leading-relaxed">
+      Upload a resume and paste a job description. AI Resume Analyzer parses the
+      resume text, scores its similarity to the job description with TF-IDF and
+      cosine similarity, and lists exactly which skills matched and which are
+      missing &mdash; then packages it all into a downloadable PDF report.
     </p>
 
-    <div class="mt-4">
-
-    {% if user.is_authenticated %}
-
-        <a href="{% url 'upload_resume' %}" class="btn btn-primary btn-lg me-2">
-            Upload Resume
+    <div class="mt-8 flex flex-col sm:flex-row gap-3">
+      {% if user.is_authenticated %}
+        <a href="{% url 'analyze_resume' %}" class="inline-flex justify-center items-center px-6 py-3 rounded-md bg-emerald-500 text-slate-950 font-semibold hover:bg-emerald-400 transition">
+          Analyze a resume
         </a>
-
-        <a href="{% url 'job_description' %}" class="btn btn-success btn-lg me-2">
-            Add Job Description
+        <a href="{% url 'dashboard' %}" class="inline-flex justify-center items-center px-6 py-3 rounded-md border border-slate-700 text-slate-200 font-semibold hover:border-slate-500 transition">
+          Go to dashboard
         </a>
-
-        <a href="{% url 'analyze_resume' %}" class="btn btn-warning btn-lg">
-            Analyze Resume
+      {% else %}
+        <a href="{% url 'account_login' %}" class="inline-flex justify-center items-center gap-2 px-6 py-3 rounded-md bg-emerald-500 text-slate-950 font-semibold hover:bg-emerald-400 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="h-5 w-5">
+            <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.6 5.1 29.6 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.4-.1-2.8-.4-4.5z"/>
+            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.6 5.1 29.6 3 24 3 16 3 9 7.6 6.3 14.7z"/>
+            <path fill="#4CAF50" d="M24 45c5.5 0 10.4-1.9 14.3-5.1l-6.6-5.6C29.7 36 27 37 24 37c-5.2 0-9.6-3.3-11.3-8l-6.6 5.1C9 40.4 16 45 24 45z"/>
+            <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.2-4.1 5.6l6.6 5.6C41.6 36 45 30.7 45 24c0-1.4-.1-2.8-.4-4.5z"/>
+          </svg>
+          Sign in with Google
         </a>
-
-    {% else %}
-
-        <a href="{% url 'account_login' %}" class="btn btn-primary btn-lg">
-            Sign in with Google to get started
-        </a>
-
-    {% endif %}
-
+      {% endif %}
+      <a href="#how-it-works" class="inline-flex justify-center items-center px-6 py-3 rounded-md text-slate-400 font-medium hover:text-slate-200 transition">
+        See how it works &darr;
+      </a>
     </div>
 
-</div>
-
-<hr class="my-5">
-
-<div class="row g-4">
-
-    <div class="col-md-4">
-
-        <div class="card shadow h-100">
-
-            <div class="card-body text-center">
-
-                <h2>📄</h2>
-
-                <h4>Resume Parsing</h4>
-
-                <p>
-                    Extract text automatically from PDF and DOCX resumes.
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="col-md-4">
-
-        <div class="card shadow h-100">
-
-            <div class="card-body text-center">
-
-                <h2>🧠</h2>
-
-                <h4>AI Matching</h4>
-
-                <p>
-                    Compare resumes with job descriptions using AI and TF-IDF similarity.
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="col-md-4">
-
-        <div class="card shadow h-100">
-
-            <div class="card-body text-center">
-
-                <h2>📊</h2>
-
-                <h4>ATS Score</h4>
-
-                <p>
-                    Get match percentage, missing skills, recommendations, and downloadable PDF reports.
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-<hr class="my-5">
-
-<div class="text-center">
-
-    <h2 class="fw-bold">
-        Why Use AI Resume Analyzer?
-    </h2>
-
-    <p class="lead mt-3">
-
-        ✔️ Detect missing skills
-
-        <br><br>
-
-        ✔️ Improve ATS compatibility
-
-        <br><br>
-
-        ✔️ Compare multiple resumes
-
-        <br><br>
-
-        ✔️ Download professional reports
-
-        <br><br>
-
-        ✔️ Built using Python, Django, PostgreSQL and AI
-
+    <p class="mt-6 flex items-start gap-2 text-sm text-slate-500 max-w-xl">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4 mt-0.5 shrink-0 text-slate-600">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M12 16v-5M12 8h.01" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>
+        Built for tech/IT roles &mdash; the skill-matching dictionary covers
+        programming languages, frameworks, cloud, AI/ML, and dev tools.
+        Not a general resume matcher for other industries.
+      </span>
     </p>
+  </div>
+</section>
 
-</div>
+<section class="border-t border-slate-800 bg-[#12151b]">
+  <div class="reveal max-w-6xl mx-auto px-4 sm:px-6 py-10">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
 
+      <div class="rounded-lg border border-slate-800 bg-[#171a21] px-4 py-5">
+        <p class="text-sm font-semibold text-emerald-400">PDF &amp; DOCX</p>
+        <p class="mt-1 text-xs text-slate-500">Resume parsing</p>
+      </div>
+
+      <div class="rounded-lg border border-slate-800 bg-[#171a21] px-4 py-5">
+        <p class="text-sm font-semibold text-emerald-400">TF-IDF + Cosine</p>
+        <p class="mt-1 text-xs text-slate-500">Similarity scoring</p>
+      </div>
+
+      <div class="rounded-lg border border-slate-800 bg-[#171a21] px-4 py-5">
+        <p class="text-sm font-semibold text-emerald-400">Matched &amp; Missing</p>
+        <p class="mt-1 text-xs text-slate-500">Skill breakdown</p>
+      </div>
+
+      <div class="rounded-lg border border-slate-800 bg-[#171a21] px-4 py-5">
+        <p class="text-sm font-semibold text-emerald-400">Google Sign-In</p>
+        <p class="mt-1 text-xs text-slate-500">Private to your account</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="how-it-works" class="border-t border-slate-800 bg-[#12151b]">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+    <div class="reveal">
+      <h2 class="text-2xl sm:text-3xl font-bold text-slate-50">How it works</h2>
+      <p class="mt-2 text-slate-400 max-w-2xl">One page, one submission &mdash; here's the actual pipeline that runs on it.</p>
+    </div>
+
+    <div id="pipeline-wrapper" class="reveal mt-12 max-w-md mx-auto">
+      <svg id="pipeline-svg" viewBox="0 0 320 716" width="100%" role="img" aria-label="Pipeline: resume upload, text extraction, TF-IDF vectorization, cosine similarity score, matched and missing skills, PDF report">
+        <defs>
+          <marker id="pipeline-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#10b981"/>
+          </marker>
+
+          <symbol id="icon-upload" viewBox="0 0 24 24">
+            <path d="M12 16V4M12 4l-4 4M12 4l4 4M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </symbol>
+          <symbol id="icon-extract" viewBox="0 0 24 24">
+            <path d="M6 3h9l4 4v14a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M9 13h6M9 17h6M9 9h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </symbol>
+          <symbol id="icon-vector" viewBox="0 0 24 24">
+            <circle cx="6" cy="6" r="1.6" fill="currentColor"/>
+            <circle cx="12" cy="6" r="1.6" fill="currentColor"/>
+            <circle cx="18" cy="6" r="1.6" fill="currentColor"/>
+            <circle cx="6" cy="12" r="1.6" fill="currentColor"/>
+            <circle cx="12" cy="12" r="1.6" fill="currentColor"/>
+            <circle cx="18" cy="12" r="1.6" fill="currentColor"/>
+            <circle cx="6" cy="18" r="1.6" fill="currentColor"/>
+            <circle cx="12" cy="18" r="1.6" fill="currentColor"/>
+            <circle cx="18" cy="18" r="1.6" fill="currentColor"/>
+          </symbol>
+          <symbol id="icon-target" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/>
+            <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/>
+            <circle cx="12" cy="12" r="0.8" fill="currentColor"/>
+          </symbol>
+          <symbol id="icon-skills" viewBox="0 0 24 24">
+            <path d="M4 7l3 3 5-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14 17l3 3 5-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/>
+          </symbol>
+          <symbol id="icon-report" viewBox="0 0 24 24">
+            <path d="M6 3h9l4 4v14a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M12 12v6M12 18l-2.5-2.5M12 18l2.5-2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </symbol>
+
+          <style>
+            #pipeline-svg text { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
+            .pipeline-node { opacity: 0; transform: translateY(10px); transition: opacity .5s ease-out, transform .5s ease-out; }
+            .pipeline-node.is-in { opacity: 1; transform: translateY(0); }
+            .pipeline-line { stroke: #10b981; stroke-width: 2; fill: none; transition: stroke-dashoffset .5s ease-out; }
+          </style>
+        </defs>
+
+        <path class="pipeline-line" d="M160,92 L160,144" marker-end="url(#pipeline-arrow)"/>
+        <path class="pipeline-line" d="M160,212 L160,264" marker-end="url(#pipeline-arrow)"/>
+        <path class="pipeline-line" d="M160,332 L160,384" marker-end="url(#pipeline-arrow)"/>
+        <path class="pipeline-line" d="M160,452 L160,504" marker-end="url(#pipeline-arrow)"/>
+        <path class="pipeline-line" d="M160,572 L160,624" marker-end="url(#pipeline-arrow)"/>
+
+        <g transform="translate(0,24)">
+          <g class="pipeline-node">
+            <rect x="20" y="0" width="280" height="68" rx="12" fill="#171a21" stroke="#262b35"/>
+            <use href="#icon-upload" x="36" y="24" width="20" height="20" color="#34d399"/>
+            <text x="68" y="30" fill="#f1f5f9" font-size="14" font-weight="600">Resume Upload</text>
+            <text x="68" y="48" fill="#94a3b8" font-size="12">PDF or DOCX file</text>
+          </g>
+        </g>
+
+        <g transform="translate(0,144)">
+          <g class="pipeline-node">
+            <rect x="20" y="0" width="280" height="68" rx="12" fill="#171a21" stroke="#262b35"/>
+            <use href="#icon-extract" x="36" y="24" width="20" height="20" color="#34d399"/>
+            <text x="68" y="30" fill="#f1f5f9" font-size="14" font-weight="600">Text Extraction</text>
+            <text x="68" y="48" fill="#94a3b8" font-size="12">Raw resume text is parsed out</text>
+          </g>
+        </g>
+
+        <g transform="translate(0,264)">
+          <g class="pipeline-node">
+            <rect x="20" y="0" width="280" height="68" rx="12" fill="#171a21" stroke="#262b35"/>
+            <use href="#icon-vector" x="36" y="24" width="20" height="20" color="#34d399"/>
+            <text x="68" y="30" fill="#f1f5f9" font-size="14" font-weight="600">TF-IDF Vectorization</text>
+            <text x="68" y="48" fill="#94a3b8" font-size="12">Resume + job description as vectors</text>
+          </g>
+        </g>
+
+        <g transform="translate(0,384)">
+          <g class="pipeline-node">
+            <rect x="20" y="0" width="280" height="68" rx="12" fill="#171a21" stroke="#262b35"/>
+            <use href="#icon-target" x="36" y="24" width="20" height="20" color="#34d399"/>
+            <text x="68" y="30" fill="#f1f5f9" font-size="14" font-weight="600">Cosine Similarity Score</text>
+            <text x="68" y="48" fill="#94a3b8" font-size="12">Interpretable ATS-style match %</text>
+          </g>
+        </g>
+
+        <g transform="translate(0,504)">
+          <g class="pipeline-node">
+            <rect x="20" y="0" width="280" height="68" rx="12" fill="#171a21" stroke="#262b35"/>
+            <use href="#icon-skills" x="36" y="24" width="20" height="20" color="#34d399"/>
+            <text x="68" y="30" fill="#f1f5f9" font-size="14" font-weight="600">Matched / Missing Skills</text>
+            <text x="68" y="48" fill="#94a3b8" font-size="12">Rule-based keyword comparison</text>
+          </g>
+        </g>
+
+        <g transform="translate(0,624)">
+          <g class="pipeline-node">
+            <rect x="20" y="0" width="280" height="68" rx="12" fill="#171a21" stroke="#262b35"/>
+            <use href="#icon-report" x="36" y="24" width="20" height="20" color="#34d399"/>
+            <text x="68" y="30" fill="#f1f5f9" font-size="14" font-weight="600">PDF Report</text>
+            <text x="68" y="48" fill="#94a3b8" font-size="12">Full result, ready to download</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<section class="max-w-6xl mx-auto px-4 sm:px-6 py-16">
+  <div class="reveal grid grid-cols-1 md:grid-cols-3 gap-5">
+
+    <div class="rounded-lg border border-slate-800 p-5">
+      <h3 class="font-semibold text-slate-100">Matched vs. missing skills</h3>
+      <p class="mt-2 text-sm text-slate-400 leading-relaxed">Rule-based keyword matching lists exactly which required skills your resume already shows, and which ones it doesn't.</p>
+    </div>
+
+    <div class="rounded-lg border border-slate-800 p-5">
+      <h3 class="font-semibold text-slate-100">Every analysis is private</h3>
+      <p class="mt-2 text-sm text-slate-400 leading-relaxed">Sign in with Google and only you can see your own uploads, scores, and reports.</p>
+    </div>
+
+    <div class="rounded-lg border border-slate-800 p-5">
+      <h3 class="font-semibold text-slate-100">Downloadable PDF report</h3>
+      <p class="mt-2 text-sm text-slate-400 leading-relaxed">Every result can be exported as a PDF &mdash; score, matched skills, missing skills, and recommendation in one file.</p>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function () {
+    const wrapper = document.getElementById("pipeline-wrapper");
+    const svg = document.getElementById("pipeline-svg");
+    if (!wrapper || !svg) return;
+
+    const nodes = svg.querySelectorAll(".pipeline-node");
+    const lines = svg.querySelectorAll(".pipeline-line");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    lines.forEach((line) => {
+      const length = line.getTotalLength();
+      line.style.strokeDasharray = length;
+      line.style.strokeDashoffset = reduceMotion ? 0 : length;
+    });
+
+    function playPipeline() {
+      if (reduceMotion) {
+        nodes.forEach((n) => n.classList.add("is-in"));
+        lines.forEach((l) => { l.style.strokeDashoffset = 0; });
+        return;
+      }
+      nodes.forEach((node, i) => {
+        setTimeout(() => node.classList.add("is-in"), i * 220);
+      });
+      lines.forEach((line, i) => {
+        setTimeout(() => { line.style.strokeDashoffset = 0; }, i * 220 + 160);
+      });
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          playPipeline();
+          observer.unobserve(wrapper);
+        }
+      });
+    }, { threshold: 0.25 });
+
+    observer.observe(wrapper);
+  })();
+</script>
 {% endblock %}

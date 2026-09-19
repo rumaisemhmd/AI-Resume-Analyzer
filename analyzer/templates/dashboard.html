@@ -1,62 +1,67 @@
 {% extends "base.html" %}
 
+{% block title %}Dashboard &mdash; AI Resume Analyzer{% endblock %}
+
 {% block content %}
 
-<div class="container mt-5">
+<section class="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
 
-<h2 class="mb-4">
-Analysis Dashboard
-</h2>
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-bold text-slate-50">Your analyses</h1>
+      <p class="mt-1 text-sm text-slate-400">Every resume/job-description pair you've analyzed, most recent first.</p>
+    </div>
+    <a href="{% url 'analyze_resume' %}" class="inline-flex items-center justify-center px-5 py-2.5 rounded-md bg-emerald-500 text-slate-950 font-semibold hover:bg-emerald-400 transition">
+      New analysis
+    </a>
+  </div>
 
-<table class="table table-bordered table-hover">
+  {% if analyses %}
+    <div class="mt-8 overflow-x-auto rounded-xl border border-slate-800">
+      <table class="min-w-full divide-y divide-slate-800 text-sm">
+        <thead class="bg-[#171a21]">
+          <tr>
+            <th class="px-4 py-3 text-left font-medium text-slate-400">Resume</th>
+            <th class="px-4 py-3 text-left font-medium text-slate-400">Job title</th>
+            <th class="px-4 py-3 text-left font-medium text-slate-400">Score</th>
+            <th class="px-4 py-3 text-left font-medium text-slate-400">Date</th>
+            <th class="px-4 py-3 text-right font-medium text-slate-400">&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800 bg-[#12151b]">
+          {% for analysis in analyses %}
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="px-4 py-3 text-slate-200 max-w-[220px] truncate" title="{{ analysis.resume.resume_file.name }}">{{ analysis.resume.resume_file.name }}</td>
+            <td class="px-4 py-3 text-slate-300">{{ analysis.job.title }}</td>
+            <td class="px-4 py-3">
+              <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold
+                {% if analysis.similarity_score >= 75 %}bg-emerald-500/10 text-emerald-300 border border-emerald-500/30
+                {% elif analysis.similarity_score >= 50 %}bg-amber-500/10 text-amber-300 border border-amber-500/30
+                {% else %}bg-rose-500/10 text-rose-300 border border-rose-500/30{% endif %}">
+                {{ analysis.similarity_score|floatformat:2 }}%
+              </span>
+            </td>
+            <td class="px-4 py-3 text-slate-400">{{ analysis.created_at|date:"d M Y H:i" }}</td>
+            <td class="px-4 py-3 text-right">
+              <a href="{% url 'analysis_result' analysis.id %}" class="inline-flex items-center px-3 py-1.5 rounded-md border border-slate-700 text-slate-200 text-xs font-medium hover:border-emerald-500/50 hover:text-emerald-300 transition">
+                View
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="mt-10 rounded-xl border border-dashed border-slate-700 p-12 text-center">
+      <p class="text-slate-300 font-medium">No analyses yet</p>
+      <p class="mt-1 text-sm text-slate-500">Run your first resume-to-job-description match to see it here.</p>
+      <a href="{% url 'analyze_resume' %}" class="mt-5 inline-flex items-center justify-center px-5 py-2.5 rounded-md bg-emerald-500 text-slate-950 font-semibold hover:bg-emerald-400 transition">
+        Analyze a resume
+      </a>
+    </div>
+  {% endif %}
 
-<thead class="table-dark">
-
-<tr>
-
-<th>Resume</th>
-
-<th>Job</th>
-
-<th>Score</th>
-
-<th>Date</th>
-
-<th>Action</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-{% for analysis in analyses %}
-<tr>
-    <td>{{ analysis.resume.resume_file.name }}</td>
-    <td>{{ analysis.job.title }}</td>
-    <td>
-        <span class="badge bg-success">
-            {{ analysis.similarity_score|floatformat:2 }}%
-        </span>
-    </td>
-    <td>{{ analysis.created_at|date:"d M Y H:i" }}</td>
-    <td>
-        <a href="{% url 'analysis_result' analysis.id %}"
-           class="btn btn-primary btn-sm">
-            View
-        </a>
-    </td>
-</tr>
-{% empty %}
-<tr>
-    <td colspan="5" class="text-center">
-        No analyses found.
-    </td>
-</tr>
-{% endfor %}
-</tbody>
-
-</table>
-
-</div>
+</section>
 
 {% endblock %}

@@ -1,27 +1,34 @@
+import os
+
 from django import forms
-from .models import Resume, JobDescription
-from .models import Analysis
 
-class ResumeForm(forms.ModelForm):
-
-    class Meta:
-        model = Resume
-        fields = ['resume_file']
+ALLOWED_RESUME_EXTENSIONS = {".pdf", ".docx"}
 
 
-class JobDescriptionForm(forms.ModelForm):
+class AnalyzeUploadForm(forms.Form):
 
-    class Meta:
-        model = JobDescription
-        fields = ['title', 'description']
+    resume_file = forms.FileField(
+        label="Resume",
+        widget=forms.ClearableFileInput(attrs={"accept": ".pdf,.docx"}),
+    )
 
-class AnalysisForm(forms.ModelForm):
+    job_title = forms.CharField(
+        label="Job title",
+        max_length=200,
+        widget=forms.TextInput(attrs={"placeholder": "e.g. Senior Backend Engineer"}),
+    )
 
-    class Meta:
-        model = Analysis
-        fields = ["resume", "job"]
+    job_description = forms.CharField(
+        label="Job description",
+        widget=forms.Textarea(attrs={
+            "rows": 8,
+            "placeholder": "Paste the full job description here...",
+        }),
+    )
 
-    def __init__(self, *args, user=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        if user is not None:
-            self.fields["resume"].queryset = Resume.objects.filter(user=user)
+    def clean_resume_file(self):
+        resume_file = self.cleaned_data["resume_file"]
+        extension = os.path.splitext(resume_file.name)[1].lower()
+        if extension not in ALLOWED_RESUME_EXTENSIONS:
+            raise forms.ValidationError("Upload a .pdf or .docx file.")
+        return resume_file
