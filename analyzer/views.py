@@ -9,8 +9,7 @@ from .ai_engine.similarity_engine import (calculate_similarity, calculate_final_
 from .ai_engine.skill_extractor import (extract_skills,matched_skills,missing_skills)
 from .ai_engine.recommendation import generate_recommendation
 from django.http import HttpResponse, HttpResponseForbidden
-from reportlab.platypus import SimpleDocTemplate, Paragraph
-from reportlab.lib.styles import getSampleStyleSheet
+from .reports import build_analysis_report
 
 def home(request):
     return render(request, "home.html")
@@ -142,36 +141,26 @@ def download_report(request, analysis_id):
     if analysis.user_id != request.user.id:
         return HttpResponseForbidden("You do not have access to this analysis.")
 
-    response = HttpResponse(content_type="application/pdf")
-    response["Content-Disposition"] = (
-        'attachment; filename="analysis_report.pdf"'
-    )
+    matched = []
 
-    document = SimpleDocTemplate(response)
+    if analysis.matched_skills:
+        matched = [skill.strip() for skill in analysis.matched_skills.split(",")]
 
-    styles = getSampleStyleSheet()
+    missing = []
 
-    story = []
-
-    story.append(Paragraph("<b>AI Resume Analyzer Report</b>", styles["Title"]))
-
-    story.append(Paragraph(f"<b>Resume:</b> {analysis.resume.resume_file.name}", styles["BodyText"]))
-
-    story.append(Paragraph(f"<b>Job:</b> {analysis.job.title}", styles["BodyText"]))
-
-    story.append(Paragraph(f"<b>Match Score:</b> {analysis.similarity_score:.2f}%", styles["BodyText"]))
-
-    story.append(Paragraph(f"<b>Matched Skills:</b> {analysis.matched_skills}", styles["BodyText"]))
-
-    story.append(Paragraph(f"<b>Missing Skills:</b> {analysis.missing_skills}", styles["BodyText"]))
+    if analysis.missing_skills:
+        missing = [skill.strip() for skill in analysis.missing_skills.split(",")]
 
     recommendation = generate_recommendation(
         analysis.similarity_score,
         analysis.missing_skills
     )
 
-    story.append(Paragraph(f"<b>Recommendation:</b> {recommendation}", styles["BodyText"]))
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = (
+        'attachment; filename="analysis_report.pdf"'
+    )
 
-    document.build(story)
+    build_analysis_report(response, analysis, matched, missing, recommendation)
 
     return response
